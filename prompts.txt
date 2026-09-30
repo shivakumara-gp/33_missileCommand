@@ -1,3 +1,0 @@
-Task 4 prompt:
-
-Implement `city_repair_threshold()` in `game.py`. Return `2000` so the existing update logic rebuilds one destroyed city each time the score reaches a new 2,000-point milestone. Keep the change focused and briefly explain it.
