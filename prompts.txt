@@ -1,0 +1,12 @@
+prompt for 
+task 1
+i am gamer Fix the battery selection bug in `game.py`. Update `nearest_battery` so it considers only batteries that are alive and have ammunition, then returns the closest eligible battery to the clicked point. If no eligible battery remains, return `None`. Keep the change focused and preserve the existing behavior for eligible batteries. Briefly explain the change.
+
+task 2
+i am gamer lets  Implement explosion_color(progress) in game.py. Clamp progress to the range 0.0–1.0 and return an RGB tuple that smoothly transitions from orange at the start, to white-hot at the midpoint, then to deep red at the end. Keep the change focused and briefly explain the color transition.
+
+task 3
+i am game lets Implement on_city_destroyed(city) in game.py so that destroying a standing city displays a red warning message in the game window with the city’s location. Clear the warning when the player resets the game. Keep the change focused and briefly explain it
+
+task 4
+i am gamer lets Implement city_repair_threshold() in game.py. Return 2000 so the existing update logic rebuilds one destroyed city each time the score reaches a new 2,000-point milestone. Keep the change focused and briefly explain it.
