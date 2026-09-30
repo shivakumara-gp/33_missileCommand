@@ -1,25 +1,35 @@
 import random
-import pygame
+import pygame  
 
 WIDTH, HEIGHT = 800, 600
 GROUND_Y = HEIGHT - 40
 INTERCEPTOR_SPEED, EXPLOSION_MAX, EXPLOSION_TIME = 420, 45, 1.2
 AMMO_PER_BATTERY = 10
+city_warning = ""
 
 
 def explosion_color(progress):
     """Return an (r, g, b) colour for an explosion (progress 0..1 of its life), or None for the default."""
-    pass
+    # Start with a hot orange, peak at white, then cool to deep red as it fades.
+    progress = max(0.0, min(1.0, progress))
+    if progress <= 0.5:
+        start, end = (255, 120, 20), (255, 255, 240)
+        blend = progress * 2
+    else:
+        start, end = (255, 255, 240), (180, 20, 0)
+        blend = (progress - 0.5) * 2
+    return tuple(round(a + (b - a) * blend) for a, b in zip(start, end))
 
 
 def on_city_destroyed(city):
-    """Called when a city is hit; add screen shake, sounds, or a game-over warning here."""
-    pass
+    """Show a warning when a standing city is destroyed."""
+    global city_warning
+    city_warning = f"CITY DESTROYED at x={city.pos.x:.0f}!"
 
 
 def city_repair_threshold():
     """Return a score value at which a destroyed city is rebuilt, or None to disable city repair."""
-    pass
+    return 2000
 
 
 class Battery:
@@ -87,6 +97,8 @@ class Game:
         self.reset()
 
     def reset(self):
+        global city_warning
+        city_warning = ""
         self.batteries = [Battery(60), Battery(WIDTH / 2), Battery(WIDTH - 60)]
         xs = [150, 230, 310, 490, 570, 650]
         self.cities = [City(x) for x in xs]
@@ -102,14 +114,15 @@ class Game:
             battery.alive, battery.ammo = True, AMMO_PER_BATTERY
 
     def nearest_battery(self, target):
-        return min(self.batteries, key=lambda b: b.pos.distance_squared_to(target))
+        eligible = (b for b in self.batteries if b.alive and b.ammo > 0)
+        return min(eligible, key=lambda b: b.pos.distance_squared_to(target), default=None)
 
     def launch(self, target):
         target = pygame.Vector2(target)
         if self.state != "play" or target.y > GROUND_Y - 20:
             return
         battery = self.nearest_battery(target)
-        if battery.alive and battery.ammo > 0:
+        if battery is not None:
             battery.ammo -= 1
             self.interceptors.append(Interceptor(battery.pos, target))
 
@@ -191,6 +204,9 @@ class Game:
             pygame.draw.circle(screen, color, explosion.pos, max(1, int(explosion.radius)))
         hud = self.font.render(f"Score {self.score}   Wave {self.wave}   Click to fire   R = reset", True, (240, 240, 240))
         screen.blit(hud, (10, 8))
+        if city_warning:
+            warning = self.font.render(city_warning, True, (255, 90, 70))
+            screen.blit(warning, warning.get_rect(center=(WIDTH // 2, 42)))
         if self.state == "lose":
             label = self.font.render("ALL CITIES LOST - Press R", True, (255, 255, 120))
             screen.blit(label, label.get_rect(center=(WIDTH // 2, HEIGHT // 2)))
