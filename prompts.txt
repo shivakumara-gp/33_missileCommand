@@ -10,3 +10,6 @@ i am game lets Implement on_city_destroyed(city) in game.py so that destroying a
 
 task 4
 i am gamer lets Implement city_repair_threshold() in game.py. Return 2000 so the existing update logic rebuilds one destroyed city each time the score reaches a new 2,000-point milestone. Keep the change focused and briefly explain it.
+
+ai chat link:
+https://chatgpt.com/s/cx_6abdd7aa82648191a95ccf3d5a24f11c
